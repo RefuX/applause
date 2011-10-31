@@ -1,0 +1,108 @@
+«IMPORT org::applause::lang::applauseDsl»
+
+«EXTENSION templates::Extensions»
+«EXTENSION templates::GeneratorExtensions»
+«EXTENSION templates::MetamodelExtensions»
+«EXTENSION templates::DataModelMappingExtensions»
+
+«DEFINE main FOR Application-»
+«EXPAND entity»
+«ENDDEFINE»
+
+«DEFINE entity FOR Application-»
+«EXPAND headerFile»
+«EXPAND moduleFile»
+«ENDDEFINE»
+
+«DEFINE headerFile FOR Application-»
+«FILE "ManagedObjectModelProvider.h"»
+#import <Foundation/Foundation.h>
+#import <CoreData/CoreData.h>
+
+@interface ManagedObjectModelProvider : NSObject
++ (NSManagedObjectModel *)managedObjectModelCreate;
+@end
+«ENDFILE»
+«ENDDEFINE»
+
+«DEFINE moduleFile FOR Application-»
+«FILE "ManagedObjectModelProvider.m"»
+#import "ManagedObjectModelProvider.h"
+
+@implementation ManagedObjectModelProvider
+
++ (NSManagedObjectModel *)managedObjectModelCreate
+{
+«FOREACH this.entities() AS entity-»
+	//«entity.name.toUpperCase()»
+    NSEntityDescription *«entity.name()» = [[NSEntityDescription alloc] init];
+    [«entity.name()»Entity setName:@"«entity.name»"];
+    [«entity.name()»Entity setManagedObjectClassName:@"«entity.name»"];
+    
+    NSMutableArray *«entity.propertiesName()» = [NSMutableArray array];
+	«FOREACH entity.properties AS property-»
+	«EXPAND property (entity, property) FOR property.typeDescription().type-»
+	
+	«ENDFOREACH-»
+«ENDFOREACH-»
+	
+	//RELATIONSHIPS
+«FOREACH this.entities() AS entity-»
+	«FOREACH entity.properties AS property-»
+	«EXPAND relationship (entity, property) FOR property.typeDescription().type-»
+	«ENDFOREACH-»
+«ENDFOREACH-»
+
+	//PROPERTIES
+    //When you set properties, it is copied, so can't update properties after
+«FOREACH this.entities() AS entity-»
+    [«entity.name()» setProperties:«entity.propertiesName()»];
+«ENDFOREACH-»
+
+    //add to the mom
+    NSManagedObjectModel *mom = [[NSManagedObjectModel alloc] init];	
+    [mom setEntities:[NSArray arrayWithObjects:«EXPAND entityNames» nil]];
+        
+    return mom;
+}
+@end
+«ENDFILE»
+«ENDDEFINE»
+
+«DEFINE property (Entity entity, Property property) FOR Type-»
+«ENDDEFINE»
+
+«DEFINE property (Entity entity, Property property) FOR SimpleType-»
+    NSAttributeDescription *«property.name» = [[NSAttributeDescription alloc] init];	
+    [«entity.propertiesName()» addObject:«property.name»];	
+    [«property.name» setName:@"«property.name»"];
+    [«property.name» setAttributeType:«this.dataModelTypeName()»];
+«ENDDEFINE»
+
+«DEFINE property (Entity entity, Property property) FOR Entity-»
+«ENDDEFINE»
+
+«DEFINE relationship (Entity entity, Property property) FOR Type-»
+«ENDDEFINE»
+
+«DEFINE relationship (Entity entity, Property property) FOR SimpleType-»
+«ENDDEFINE»
+
+«DEFINE relationship (Entity srcEntity, Property property) FOR Entity-»
+    //Relationship between «srcEntity.name» and «this.name»
+    NSRelationshipDescription *«srcEntity.name(this)» = [[NSRelationshipDescription alloc] init];
+    [«srcEntity.name(this)» setName:@"«property.name»"];
+    [«srcEntity.name(this)» setDestinationEntity:«this.name()»];
+    «IF property.typeDescription().many -»
+    [«srcEntity.name(this)» setMaxCount:NSUIntegerMax];
+    [«srcEntity.name(this)» setMinCount:0];
+    «ELSE-»
+    [«srcEntity.name(this)» setMaxCount:1];
+    [«srcEntity.name(this)» setMinCount:1];
+    «ENDIF-»
+    [«srcEntity.propertiesName()» addObject:«srcEntity.name(this)»];
+«ENDDEFINE»
+
+«DEFINE entityNames FOR Application-»
+«FOREACH entities() AS entity-»«entity.name()»,«ENDFOREACH-»
+«ENDDEFINE»

@@ -1,0 +1,59 @@
+«IMPORT org::applause::lang::applauseDsl»
+
+«EXTENSION templates::Extensions»
+«EXTENSION templates::GeneratorExtensions»
+«EXTENSION templates::MetamodelExtensions»
+
+«DEFINE main FOR Application-»
+«EXPAND entity FOREACH this.entities()»
+«ENDDEFINE»
+
+«DEFINE entity FOR Entity»
+«EXPAND headerFile»
+«EXPAND moduleFile»
+«ENDDEFINE»
+
+«DEFINE headerFile FOR Entity»
+«FILE this.name.toFirstUpper() + ".h"»
+#import <Foundation/Foundation.h>
+#import <CoreData/CoreData.h>
+
+«FOREACH this.properties AS property-»
+«EXPAND typeDescription FOR property.typeDescription()-»
+«ENDFOREACH-»
+
+@interface «this.name» : NSManagedObject
+
+«FOREACH this.properties AS property-»
+@property (nonatomic, retain) «property.propertyType()» *«property.name»;
+«ENDFOREACH-»
+
+@end
+«ENDFILE»
+«ENDDEFINE»
+
+«DEFINE moduleFile FOR Entity»
+«FILE this.name.toFirstUpper() + ".m"»
+@implementation «className()»
+
+«FOREACH this.properties AS property-»
+@dynamic «property.name»;
+«ENDFOREACH-»
+
+@end
+«ENDFILE»
+«ENDDEFINE»
+
+«DEFINE typeDescription FOR TypeDescription-»
+«EXPAND classImport FOR type-»
+«ENDDEFINE»
+
+«DEFINE classImport FOR Type-»
+«ENDDEFINE»
+
+«DEFINE classImport FOR SimpleType-»
+«ENDDEFINE»
+
+«DEFINE classImport FOR Entity-»
+@class «this.name»;
+«ENDDEFINE»

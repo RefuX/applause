@@ -9,5 +9,7 @@
 «DEFINE main FOR Application-»
 «EXPAND View::main»
 «EXPAND Provider::main»
+«EXPAND Entity::main FOR this»
+«EXPAND DataModelMapping::main FOR this»
 «EXPAND Application::main»
 «ENDDEFINE»

@@ -1,0 +1,18 @@
+import org::eclipse::emf::ecore;
+import org::applause::lang::applauseDsl;
+
+// we can use this extension to map Applause types to platform types.
+dataModelTypeName(Type this):
+	if (this.name == 'String') then "NSStringAttributeType"
+	else if (this.name == 'Int') then "NSInteger16AttributeType"
+	else if (this.name == 'Bool') then "NSBooleanAttributeType"
+	else this.name;
+
+name(Entity this):
+	this.name.toFirstLower() + "Entity";
+	
+propertiesName(Entity this):
+	this.name.toFirstLower() + "Properties";
+	
+name(Entity src, Entity dst):
+	src.name.toFirstLower() + "To" + dst.name + "Relationship";

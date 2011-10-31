@@ -1,0 +1,37 @@
+import org::applause::lang::applauseDsl;
+import org::eclipse::emf::ecore;
+
+/**
+ * Types
+ */
+typeName(TypeDescription this):
+	this.many 
+		? 'NSSet'
+		: this.type.typeName();
+	
+// we can use this extension to map Applause types to platform types.
+typeName(Type this):
+	this.name == 'String' 
+		? "NSString"
+		: this.name;
+	
+/**
+ * Parameters
+ */
+parameterName(Parameter this):
+	this.name.toFirstLower();
+	
+parameterType(Parameter this):
+	this.description.typeName();	
+	
+/**
+ * Properties
+ */	
+propertyName(Property this):
+	this.name.toFirstUpper();
+	
+propertyType(Property this):
+	this.description.typeName();	
+	
+className(Entity this):
+	this.name.toFirstUpper();
