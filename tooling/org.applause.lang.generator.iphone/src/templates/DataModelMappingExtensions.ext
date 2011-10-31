@@ -6,6 +6,7 @@ dataModelTypeName(Type this):
 	if (this.name == 'String') then "NSStringAttributeType"
 	else if (this.name == 'Int') then "NSInteger16AttributeType"
 	else if (this.name == 'Bool') then "NSBooleanAttributeType"
+	else if (this.name == 'Date') then "NSDateAttributeType"
 	else this.name;
 
 name(Entity this):

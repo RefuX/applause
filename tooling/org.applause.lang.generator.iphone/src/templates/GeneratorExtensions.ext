@@ -11,9 +11,11 @@ typeName(TypeDescription this):
 	
 // we can use this extension to map Applause types to platform types.
 typeName(Type this):
-	this.name == 'String' 
-		? "NSString"
-		: this.name;
+	if (this.name == 'String') then "NSString"
+	else if (this.name == 'Int') then "NSNumber"
+	else if (this.name == 'Bool') then "NSNumber"
+	else if (this.name == 'Date') then "NSDate"
+	else this.name;
 	
 /**
  * Parameters

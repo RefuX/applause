@@ -10,8 +10,8 @@
 «ENDDEFINE»
 
 «DEFINE entity FOR Application-»
-«EXPAND headerFile»
-«EXPAND moduleFile»
+«EXPAND headerFile-»
+«EXPAND moduleFile-»
 «ENDDEFINE»
 
 «DEFINE headerFile FOR Application-»
@@ -101,6 +101,7 @@
     [«srcEntity.name(this)» setMinCount:1];
     «ENDIF-»
     [«srcEntity.propertiesName()» addObject:«srcEntity.name(this)»];
+    
 «ENDDEFINE»
 
 «DEFINE entityNames FOR Application-»
