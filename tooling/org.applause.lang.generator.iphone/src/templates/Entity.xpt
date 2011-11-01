@@ -27,13 +27,26 @@
 «FOREACH this.properties AS property-»
 @property (nonatomic, retain) «property.propertyType()» *«property.name»;
 «ENDFOREACH-»
-
 @end
+
+@interface «this.name» (CoreDataGeneratedAccessors)
+«FOREACH this.properties AS property-»
+«IF property.typeDescription().many-»
+- (void)add«property.propertyName()»Object:(«property.typeDescription().type.typeName()» *)value;
+- (void)remove«property.propertyName()»Object:(«property.typeDescription().type.typeName()» *)value;
+- (void)add«property.propertyName()»:(NSSet *)values;
+- (void)remove«property.propertyName()»:(NSSet *)values;
+«ENDIF-»
+«ENDFOREACH-»
+@end
+
 «ENDFILE»
 «ENDDEFINE»
 
 «DEFINE moduleFile FOR Entity»
 «FILE this.name.toFirstUpper() + ".m"»
+#import "«className()».h"
+
 @implementation «className()»
 
 «FOREACH this.properties AS property-»

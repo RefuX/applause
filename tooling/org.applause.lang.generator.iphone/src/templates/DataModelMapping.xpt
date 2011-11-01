@@ -36,8 +36,8 @@
 «FOREACH this.entities() AS entity-»
 	//«entity.name.toUpperCase()»
     NSEntityDescription *«entity.name()» = [[NSEntityDescription alloc] init];
-    [«entity.name()»Entity setName:@"«entity.name»"];
-    [«entity.name()»Entity setManagedObjectClassName:@"«entity.name»"];
+    [«entity.name()» setName:@"«entity.name»"];
+    [«entity.name()» setManagedObjectClassName:@"«entity.name»"];
     
     NSMutableArray *«entity.propertiesName()» = [NSMutableArray array];
 	«FOREACH entity.properties AS property-»
@@ -73,10 +73,12 @@
 «ENDDEFINE»
 
 «DEFINE property (Entity entity, Property property) FOR SimpleType-»
-    NSAttributeDescription *«property.name» = [[NSAttributeDescription alloc] init];	
-    [«entity.propertiesName()» addObject:«property.name»];	
-    [«property.name» setName:@"«property.name»"];
-    [«property.name» setAttributeType:«this.dataModelTypeName()»];
+	{
+	    NSAttributeDescription *«property.name» = [[NSAttributeDescription alloc] init];	
+	    [«entity.propertiesName()» addObject:«property.name»];	
+	    [«property.name» setName:@"«property.name»"];
+	    [«property.name» setAttributeType:«this.dataModelTypeName()»];
+	}
 «ENDDEFINE»
 
 «DEFINE property (Entity entity, Property property) FOR Entity-»
